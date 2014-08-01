@@ -3,8 +3,8 @@
 var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
-var BearSchema   = new Schema({
+var HDXSchema   = new Schema({
 	name: String
 });
 
-module.exports = mongoose.model('Bear', BearSchema);
+module.exports = mongoose.model('HDX_API', HDXSchema);

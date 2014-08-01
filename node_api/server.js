@@ -16,10 +16,14 @@ var port = process.env.PORT || 8080; 		// set our port
 
 // setup the database.
 // in this case we are using a standard one.
+// add a new MongoDB database. Hosted on the web somewhere.
+// what is the 'mongoose' library.
 var mongoose   = require('mongoose');
 mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to our database
 
 // adding the db schema
+// change the schema names: hdx_schema
+// change the variable names that will be used later
 var Bear     = require('./app/models/bear');
 
 
@@ -36,15 +40,20 @@ router.use(function(req, res, next) {
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
-	res.json({ message: 'hooray! welcome to our api!' });	
+	res.json({
+		message: 'Welcome to the HDX API. Version: Gaza v.0.1'
+	});
 });
 
 
 // on routes that end in /bears
+// change to /indicators -- the first route + table that should be implemented.
 // ----------------------------------------------------
 router.route('/bears')
 
 	// create a bear (accessed at POST http://localhost:8080/api/bears)
+	// create an indicator: not necessary but worth to continue following the example.
+	// **eliminate when done**
 	.post(function(req, res) {
 
 		var bear = new Bear(); 		// create a new instance of the Bear model
@@ -55,7 +64,7 @@ router.route('/bears')
 			if (err)
 				res.send(err);
 
-			res.json({ message: 'Bear created!' });
+			res.json({ message: 'Indicator created!' });
 		})
 
 		// get all the bears (accessed at GET http://localhost:8080/api/bears)
@@ -71,8 +80,9 @@ router.route('/bears')
 	});
 
 // on routes that end in /bears/:bear_id
+// routes that try to fetch an indicator by its indID
 // ----------------------------------------------------
-router.route('/bears/:bear_id')
+router.route('/bears/:bear_id')  // change to use indID
 
 	// get the bear with that id (accessed at GET http://localhost:8080/api/bears/:bear_id)
 	.get(function(req, res) {
@@ -90,4 +100,10 @@ app.use('/api', router);
 // START THE SERVER
 // =============================================================================
 app.listen(port);
-console.log('Magic happens on port ' + port);
+console.log('=================================\n' +
+	'=================================\n' +
+	'==== Welcome to the HDX API =====\n' +
+	'==== Version: Gaza (0.1) ========\n' +
+	'=================================\n' +
+	'=================================\n' +
+	'Listening to port: ' + port);
