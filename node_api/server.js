@@ -19,7 +19,8 @@ var port = process.env.PORT || 8080; 		// set our port
 // add a new MongoDB database. Hosted on the web somewhere.
 // what is the 'mongoose' library.
 var mongoose   = require('mongoose');
-mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o'); // connect to our database
+// mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o');  // tutorial database
+mongoose.connect('mongodb://127.2.196.2:27017/gaza');  // openshift database
 
 // adding the db schema
 // change the schema names: hdx_schema
