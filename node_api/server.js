@@ -14,18 +14,14 @@ app.use(bodyParser());
 
 var port = process.env.PORT || 8080; 		// set our port
 
-// setup the database.
-// in this case we are using a standard one.
-// add a new MongoDB database. Hosted on the web somewhere.
-// what is the 'mongoose' library.
+// connecting to a local database
 var mongoose   = require('mongoose');
-// mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o');  // tutorial database
-mongoose.connect('mongodb://127.2.196.2:27017/gaza');  // openshift database
+mongoose.connect('mongodb://127.0.0.1:27017/gaza'); // connect to our database
 
-// adding the db schema
-// change the schema names: hdx_schema
-// change the variable names that will be used later
-var Bear     = require('./app/models/bear');
+// loading the shema models
+var Indicator     = require('./app/models/indicators');
+var Value     = require('./app/models/values');
+var Dataset     = require('./app/models/datasets');
 
 
 // ROUTES FOR OUR API
@@ -41,58 +37,53 @@ router.use(function(req, res, next) {
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
-	res.json({
-		message: 'Welcome to the HDX API. Version: Gaza v.0.1'
-	});
+	res.json({ message: 'HDX API Prototype v.0.1 (Gaza) | @luiscape + @takaravasha' });	
 });
 
-
-// on routes that end in /bears
-// change to /indicators -- the first route + table that should be implemented.
-// ----------------------------------------------------
-router.route('/bears')
-
-	// create a bear (accessed at POST http://localhost:8080/api/bears)
-	// create an indicator: not necessary but worth to continue following the example.
-	// **eliminate when done**
-	.post(function(req, res) {
-
-		var bear = new Bear(); 		// create a new instance of the Bear model
-		bear.name = req.body.name;  // set the bears name (comes from the request)
-
-		// save the bear and check for errors
-		bear.save(function(err) {
-			if (err)
-				res.send(err);
-
-			res.json({ message: 'Indicator created!' });
-		})
-
-		// get all the bears (accessed at GET http://localhost:8080/api/bears)
-		.get(function(req, res) {
-			Bear.find(function(err, bears) {
-				if (err)
-					res.send(err);
-
-				res.json(bears);
-			});
-		});
-
-	});
-
-// on routes that end in /bears/:bear_id
-// routes that try to fetch an indicator by its indID
-// ----------------------------------------------------
-router.route('/bears/:bear_id')  // change to use indID
-
-	// get the bear with that id (accessed at GET http://localhost:8080/api/bears/:bear_id)
+// indicators route
+router.route('/indicators')
 	.get(function(req, res) {
-		Bear.findById(req.params.bear_id, function(err, bear) {
+		Indicator.find(function(err, indicators) {
 			if (err)
 				res.send(err);
-			res.json(bear);
+
+			res.json(indicators);
 		});
 	});
+
+// values route
+router.route('/values')
+	.get(function(req, res) {
+		Value.find(function(err, values) {
+			if (err)
+				res.send(err);
+
+			res.json(values);
+		});
+	});
+
+
+// searching values based on indIDs
+router.route('/values/:indID').get( function(req, res) {
+  mongoose.model('values').find({indID: req.params.indID}, function(err, values) {
+    mongoose.model('values').populate(values, {path: 'indicators'}, function(err, values) {
+      res.send(values);
+    });
+  });
+});
+
+// datasets route
+router.route('/datasets')
+	.get(function(req, res) {
+		Dataset.find(function(err, datasets) {
+			if (err)
+				res.send(err);
+
+			res.json(datasets);
+		});
+	});
+
+
 
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
@@ -108,3 +99,4 @@ console.log('=================================\n' +
 	'=================================\n' +
 	'=================================\n' +
 	'Listening to port: ' + port);
+ 
