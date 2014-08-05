@@ -4,7 +4,9 @@ var mongoose     = require('mongoose');
 var Schema       = mongoose.Schema;
 
 var indicatorsSchema   = new Schema({
-	name: String
+	name: String,
+	units: String,
+	indID: String
 });
 
 module.exports = mongoose.model('indicators', indicatorsSchema);
